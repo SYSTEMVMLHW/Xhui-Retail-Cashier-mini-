@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>系统初始化 - 轩慧工作台</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="init-wizard">
+            <div class="init-header">
+                <h1>轩慧工作台</h1>
+                <p>欢迎使用收银管理系统</p>
+            </div>
+            
+            <div class="init-progress">
+                <div class="init-progress-bar" id="init-progress" style="width:20%;"></div>
+            </div>
+            
+            <div id="init-content"></div>
+            
+            <div class="init-navigation">
+                <button class="btn" id="init-prev" onclick="InitWizard.prevStep()">上一步</button>
+                <button class="btn btn-primary" id="init-next" onclick="InitWizard.nextStep()">下一步</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/Storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/init.js"></script>
+    
+    <script>
+        // 动态获取API URL（基于当前页面地址）
+        function getApiURL() {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            var port = window.location.port || '8888';
+            return protocol + '//' + hostname + ':' + port + '/api';
+        }
+        
+        // 设置API URL（用于检查初始化状态）
+        Storage.setBaseURL(getApiURL());
+        
+        // 如果已经初始化，跳转到登录页面
+        var config = AppData.getConfig();
+        if (config.initialized) {
+            window.location.href = 'login.html';
+        }
+        
+        // 初始化向导
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            InitWizard.init();
+        } else {
+            DOM.addEventListener(document, 'DOMContentLoaded', function() {
+                InitWizard.init();
+            });
+        }
+    </script>
+</body>
+</html>
+

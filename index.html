@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>轩慧工作台 - 收银系统</title>
+</head>
+<body>
+    <script src="js/common.js"></script>
+    <script src="js/Storage.js"></script>
+    
+    <script>
+        // 动态获取API URL（基于当前页面地址）
+        function getApiURL() {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            var port = window.location.port || '8888';
+            return protocol + '//' + hostname + ':' + port + '/api';
+        }
+        
+        // 设置API URL（必须先设置才能读取配置）
+        Storage.setBaseURL(getApiURL());
+        
+        // 检查初始化状态并跳转
+        var config = AppData.getConfig();
+        
+        if (!config.initialized) {
+            // 未初始化，跳转到初始化页面
+            window.location.href = 'init.html';
+        } else {
+            // 已初始化，跳转到登录页面
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

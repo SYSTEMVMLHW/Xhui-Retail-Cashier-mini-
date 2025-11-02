@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>系统设置 - 轩慧工作台</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="main-layout">
+        <!-- 侧边栏 -->
+        <div class="main-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">轩慧工作台</div>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" href="dashboard.html">
+                        <span style="margin-right:10px;">🏠</span>返回主页
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link active">
+                        <span style="margin-right:10px;">⚙️</span>系统设置
+                    </a>
+                </li>
+                <li class="sidebar-nav-item" style="position:absolute;bottom:20px;width:100%;">
+                    <a class="sidebar-nav-link" href="login.html">
+                        <span style="margin-right:10px;">🚪</span>退出登录
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="shop-config-layout">
+                <!-- 配置导航 -->
+                <div class="shop-config-sidebar">
+                    <h3 style="margin-top:0;">设置</h3>
+                    <ul class="config-nav">
+                        <li class="config-nav-item">
+                            <a class="config-nav-link active" onclick="showSettingsTab('system')">
+                                🔧 系统设置
+                            </a>
+                        </li>
+                        <li class="config-nav-item">
+                            <a class="config-nav-link" onclick="showSettingsTab('shop')">
+                                🏪 店铺配置
+                            </a>
+                        </li>
+                        <li class="config-nav-item">
+                            <a class="config-nav-link" onclick="showSettingsTab('recharge')">
+                                💰 预存优惠
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 配置内容 -->
+                <div class="config-content">
+                    <!-- 系统设置 -->
+                    <div id="system-tab" class="config-tab">
+                        <div class="config-section">
+                            <h3>系统设置</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">店铺名称</label>
+                                <input type="text" id="system-shop-name" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">业务模式</label>
+                                <select id="system-business-mode" class="form-control">
+                                    <option value="retail">零售模式</option>
+                                </select>
+                                <small style="display:block;margin-top:8px;color:#757575;">餐饮模式正在开发中，敬请期待</small>
+                                <small class="text-muted">切换业务模式后需刷新页面</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">支付方式</label>
+                                <div id="payment-methods-list"></div>
+                                <div style="display:flex;gap:10px;margin-top:10px;">
+                                    <input type="text" id="new-payment-name" class="form-control" placeholder="支付方式名称">
+                                    <button class="btn btn-primary" id="btn-add-payment">添加</button>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:30px;">
+                                <button class="btn btn-primary btn-lg" id="btn-save-system">保存设置</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 店铺配置 -->
+                    <div id="shop-tab" class="config-tab" style="display:none;">
+                        <div class="config-section">
+                            <h3>基础配置</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">税率（%）</label>
+                                <input type="number" id="shop-tax-rate" class="form-control" placeholder="0" min="0" max="100" step="0.01">
+                                <small class="text-muted">零售模式默认税率</small>
+                            </div>
+                            
+                            <div style="margin-top:30px;">
+                                <button class="btn btn-primary btn-lg" id="btn-save-shop">保存配置</button>
+                            </div>
+                        </div>
+                        
+                        <div class="config-section restaurant-settings" id="restaurant-settings" style="display:none;">
+                            <h3>桌台管理</h3>
+                            
+                            <div style="margin-bottom:30px;">
+                                <h4 class="form-section-title">区域管理</h4>
+                                <div id="areas-list"></div>
+                                <div style="display:flex;gap:10px;margin-top:10px;">
+                                    <input type="text" id="new-area-name" class="form-control" placeholder="区域名称">
+                                    <button class="btn btn-primary" id="btn-add-area">添加区域</button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="form-section-title">桌台管理</h4>
+                                <div id="tables-list"></div>
+                                <div style="display:flex;gap:10px;margin-top:15px;">
+                                    <select id="new-table-area" class="form-control">
+                                        <option value="">请选择区域</option>
+                                    </select>
+                                    <input type="text" id="new-table-number" class="form-control" placeholder="桌台号">
+                                    <button class="btn btn-primary" id="btn-add-table">添加桌台</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 预存优惠配置 -->
+                    <div id="recharge-tab" class="config-tab" style="display:none;">
+                        <div class="config-section">
+                            <h3>预存优惠配置</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">说明</label>
+                                <div style="padding:10px;background:#f5f5f5;border-radius:4px;color:#757575;">
+                                    <p>配置预存会员充值优惠活动。例如：充100元赠10元，充200元赠25元等。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">优惠列表</label>
+                                <div id="recharge-promotions-list"></div>
+                                <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+                                    <input type="number" id="new-recharge-amount" class="form-control" placeholder="充值金额（¥）" min="0.01" step="0.01" style="flex:1;min-width:150px;">
+                                    <input type="number" id="new-bonus-amount" class="form-control" placeholder="赠送金额（¥）" min="0" step="0.01" style="flex:1;min-width:150px;">
+                                    <button class="btn btn-primary" id="btn-add-recharge-promotion">添加优惠</button>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:30px;">
+                                <button class="btn btn-primary btn-lg" id="btn-save-recharge">保存配置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/Storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/members.js"></script>
+    <script src="js/settings.js"></script>
+    
+    <script>
+        // 动态获取API URL（基于当前页面地址）
+        function getApiURL() {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            var port = window.location.port || '8888';
+            return protocol + '//' + hostname + ':' + port + '/api';
+        }
+        
+        // 设置API URL（必须先设置才能读取配置）
+        Storage.setBaseURL(getApiURL());
+        
+        // 检查初始化状态
+        var config = AppData.getConfig();
+        if (!config.initialized) {
+            window.location.href = 'init.html';
+        }
+        
+        // 初始化
+        SettingsManager.init();
+        
+        // 根据业务模式显示餐厅设置
+        // 如果当前是餐饮模式，显示提示并自动切换为零售模式
+        if (config.businessMode === 'restaurant') {
+            Message.warning('餐饮模式正在开发中，敬请期待！');
+            config.businessMode = 'retail';
+            AppData.saveConfig(config);
+            DOM.getElement('#system-business-mode').value = 'retail';
+        }
+        
+        // 隐藏餐饮相关设置
+        var restaurantSettings = document.getElementById('restaurant-settings');
+        if (restaurantSettings) {
+            restaurantSettings.style.display = 'none';
+        }
+        
+        // 切换标签
+        function showSettingsTab(tab) {
+            document.getElementById('system-tab').style.display = 'none';
+            document.getElementById('shop-tab').style.display = 'none';
+            document.getElementById('recharge-tab').style.display = 'none';
+            
+            document.querySelectorAll('.config-nav-link').forEach(function(l) {
+                l.classList.remove('active');
+            });
+            
+            if (tab === 'system') {
+                document.getElementById('system-tab').style.display = 'block';
+                document.querySelectorAll('.config-nav-link')[0].classList.add('active');
+            } else if (tab === 'shop') {
+                document.getElementById('shop-tab').style.display = 'block';
+                document.querySelectorAll('.config-nav-link')[1].classList.add('active');
+            } else if (tab === 'recharge') {
+                document.getElementById('recharge-tab').style.display = 'block';
+                document.querySelectorAll('.config-nav-link')[2].classList.add('active');
+                SettingsManager.loadRechargePromotions();
+            }
+        }
+    </script>
+</body>
+</html>
+

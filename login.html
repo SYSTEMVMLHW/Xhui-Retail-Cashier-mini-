@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户登录 - 轩慧工作台</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">轩慧工作台</div>
+                <div class="login-subtitle">收银管理系统</div>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="请输入用户名" autocomplete="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="请输入密码" autocomplete="current-password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:10px;">登录</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/Storage.js"></script>
+    <script src="js/utils.js"></script>
+    
+    <script>
+        // 动态获取API URL（基于当前页面地址）
+        function getApiURL() {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            var port = window.location.port || '8888';
+            return protocol + '//' + hostname + ':' + port + '/api';
+        }
+        
+        // 设置API URL（必须先设置才能读取配置）
+        Storage.setBaseURL(getApiURL());
+        
+        // 检查初始化状态
+        var config = AppData.getConfig();
+        if (!config.initialized) {
+            window.location.href = 'init.html';
+        }
+        
+        // 登录处理
+        DOM.addEventListener(document, 'submit', function(e) {
+            if (e.target && e.target.id === 'login-form') {
+                e.preventDefault();
+                
+                var username = DOM.getElement('#login-username').value.trim();
+                var password = DOM.getElement('#login-password').value;
+                
+                if (!username) {
+                    Message.error('请输入用户名');
+                    return;
+                }
+                
+                if (!password) {
+                    Message.error('请输入密码');
+                    return;
+                }
+                
+                var hashedPassword = Utils.md5(password);
+                
+                if (username === config.username && hashedPassword === config.password) {
+                    Message.success('登录成功');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    Message.error('用户名或密码错误');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

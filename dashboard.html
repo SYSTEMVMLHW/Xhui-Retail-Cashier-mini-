@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>主工作台 - 轩慧工作台</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+    <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+    
+    <div class="main-layout">
+        <!-- 侧边栏 -->
+        <div class="main-sidebar" id="main-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">轩慧工作台</div>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link active" href="#retail" id="nav-retail" style="display:none;">
+                        <span style="margin-right:10px;">💰</span>零售收银
+                    </a>
+                    <a class="sidebar-nav-link active" href="#restaurant" id="nav-restaurant" style="display:none;">
+                        <span style="margin-right:10px;">🍽️</span>桌台管理
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" href="#products">
+                        <span style="margin-right:10px;">📦</span>商品管理
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" href="#members">
+                        <span style="margin-right:10px;">👤</span>会员管理
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" href="#reports">
+                        <span style="margin-right:10px;">📊</span>数据报表
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" href="settings.html">
+                        <span style="margin-right:10px;">⚙️</span>系统设置
+                    </a>
+                </li>
+                <li class="sidebar-nav-item" style="position:absolute;bottom:20px;width:100%;">
+                    <a class="sidebar-nav-link" href="login.html">
+                        <span style="margin-right:10px;">🚪</span>退出登录
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 零售收银视图 -->
+            <div id="retail-view" style="display:none;">
+                <div class="content-header">
+                    <h2>零售收银</h2>
+                    <input type="text" id="barcode-input" placeholder="请扫描或输入商品条码" style="width:300px;padding:8px 12px;border:2px dashed #d9d9d9;border-radius:4px;text-align:center;">
+                </div>
+                <div class="retail-layout" style="display:flex;">
+                    <div class="retail-products" style="flex:1;">
+                        <div id="retail-product-list"></div>
+                    </div>
+                    <div class="retail-order" style="width:350px;margin-left:20px;background:#fff;border-radius:8px;padding:20px;">
+                        <div class="order-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #f0f0f0;">
+                            <h3>当前订单</h3>
+                            <button class="btn btn-sm" onclick="RetailManager.clearOrder()">清空</button>
+                        </div>
+                        <div id="retail-order-list" class="order-items"></div>
+                        <div id="retail-order-total"></div>
+                        <button class="btn btn-primary btn-lg" onclick="RetailManager.showCheckoutModal()" style="width:100%;">结账</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 餐饮管理视图 -->
+            <div id="restaurant-view" style="display:none;">
+                <div class="content-header">
+                    <h2>桌台管理</h2>
+                </div>
+                <div style="display:flex;">
+                    <div style="flex:1;">
+                        <div id="restaurant-tables" style="margin-bottom:20px;"></div>
+                        <div id="restaurant-products"></div>
+                    </div>
+                    <div style="width:400px;margin-left:20px;position:sticky;top:20px;height:fit-content;">
+                        <div id="restaurant-order-panel"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 商品管理视图 -->
+            <div id="products-view" style="display:none;">
+                <div class="content-header">
+                    <h2>商品管理</h2>
+                    <button class="btn btn-primary" onclick="ProductsManager.showProductModal()">+ 新增商品</button>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:200px;background:#fff;padding:20px;border-radius:8px;margin-right:20px;">
+                        <div id="category-list"></div>
+                    </div>
+                    <div style="flex:1;">
+                        <div id="product-list"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 会员管理视图 -->
+            <div id="members-view" style="display:none;">
+                <div class="content-header">
+                    <h2>会员管理</h2>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn" onclick="MembersManager.showBalanceRecords()">余额记录</button>
+                        <button class="btn" onclick="MembersManager.showPointsRecords()">积分记录</button>
+                        <button class="btn btn-primary" onclick="MembersManager.showMemberModal()">+ 新增会员</button>
+                    </div>
+                </div>
+                <div id="member-list"></div>
+            </div>
+            
+            <!-- 数据报表视图 -->
+            <div id="reports-view" style="display:none;">
+                <div class="content-header">
+                    <h2>数据报表</h2>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <div style="display:flex;gap:8px;background:#fff;padding:4px;border-radius:4px;border:1px solid #E0E0E0;">
+                            <button class="btn" id="btn-view-today" style="margin:0;border:none;background:rgba(66,133,244,0.12);color:#4285F4;font-weight:500;" onclick="ReportsManager.renderTodayReport()">今日报表</button>
+                            <button class="btn" id="btn-view-history" style="margin:0;border:none;" onclick="ReportsManager.renderHistoryList()">历史记录</button>
+                        </div>
+                        <button class="btn btn-primary" id="btn-print-report" onclick="ReportsManager.printReport()">打印报表</button>
+                        <button class="btn btn-primary" id="btn-export-report" onclick="ReportsManager.exportReport()">导出Excel</button>
+                        <button class="btn btn-success" id="btn-day-end" onclick="ReportsManager.dayEnd()">日结</button>
+                    </div>
+                </div>
+                <div id="report-stats"></div>
+                <div class="card" id="report-orders-card" style="display:none;">
+                    <div class="card-header">
+                        <h3>今日订单</h3>
+                    </div>
+                    <div id="report-orders"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/Storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/members.js"></script>
+    <script src="js/retail.js"></script>
+    <script src="js/restaurant.js"></script>
+    <script src="js/reports.js"></script>
+    
+    <script>
+        // 动态获取API URL（基于当前页面地址）
+        function getApiURL() {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            var port = window.location.port || '8888';
+            return protocol + '//' + hostname + ':' + port + '/api';
+        }
+        
+        // 设置API URL（必须先设置才能读取配置）
+        Storage.setBaseURL(getApiURL());
+        
+        // 检查初始化状态
+        var config = AppData.getConfig();
+        if (!config.initialized) {
+            window.location.href = 'init.html';
+        }
+        
+        // 初始化
+        var businessMode = config.businessMode || 'retail';
+        
+        // 如果配置了餐饮模式，显示提示并强制使用零售模式
+        if (businessMode === 'restaurant') {
+            Message.warning('餐饮模式正在开发中，敬请期待！');
+            // 更新配置为零售模式
+            config.businessMode = 'retail';
+            AppData.saveConfig(config);
+        }
+        
+        // 显示对应的导航（只显示零售模式）
+        var navRetail = document.getElementById('nav-retail');
+        var navRestaurant = document.getElementById('nav-restaurant');
+        
+        navRetail.style.display = 'block';
+        navRestaurant.style.display = 'none';
+        showView('retail');
+        
+        // 初始化模块
+        ProductsManager.init();
+        MembersManager.init();
+        ReportsManager.init();
+        RetailManager.init();
+        
+        // 移动端菜单控制
+        function toggleMobileMenu() {
+            var sidebar = document.getElementById('main-sidebar');
+            var overlay = document.getElementById('mobile-overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+        
+        window.toggleMobileMenu = toggleMobileMenu;
+        
+        // 导航切换
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.sidebar-nav-link')) {
+                var link = e.target.closest('.sidebar-nav-link');
+                var href = link.getAttribute('href');
+                
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    var viewName = href.substring(1);
+                    showView(viewName);
+                    
+                    // 更新导航状态
+                    document.querySelectorAll('.sidebar-nav-link').forEach(function(l) {
+                        l.classList.remove('active');
+                    });
+                    link.classList.add('active');
+                    
+                    // 移动端：切换视图后关闭菜单
+                    if (window.innerWidth <= 768) {
+                        toggleMobileMenu();
+                    }
+                }
+            }
+        });
+        
+        // 显示视图
+        function showView(viewName) {
+            document.getElementById('retail-view').style.display = 'none';
+            document.getElementById('restaurant-view').style.display = 'none';
+            document.getElementById('products-view').style.display = 'none';
+            document.getElementById('members-view').style.display = 'none';
+            document.getElementById('reports-view').style.display = 'none';
+            
+            if (viewName === 'retail') {
+                document.getElementById('retail-view').style.display = 'block';
+                RetailManager.init();
+            } else if (viewName === 'restaurant') {
+                // 餐饮模式：显示"开发中，敬请期待"提示
+                var restaurantView = document.getElementById('restaurant-view');
+                restaurantView.style.display = 'block';
+                restaurantView.innerHTML = '<div style="text-align:center;padding:100px 20px;"><div style="font-size:120px;margin-bottom:30px;">🚧</div><h2 style="color:#4285F4;margin-bottom:20px;font-weight:400;">餐饮模式</h2><p style="font-size:18px;color:#757575;margin-bottom:30px;">开发中，敬请期待</p><p style="color:#9E9E9E;font-size:14px;">我们正在努力开发餐饮相关功能，敬请期待后续更新</p></div>';
+                Message.warning('餐饮模式正在开发中，敬请期待！');
+            } else if (viewName === 'products') {
+                document.getElementById('products-view').style.display = 'block';
+                ProductsManager.init();
+            } else if (viewName === 'members') {
+                document.getElementById('members-view').style.display = 'block';
+                MembersManager.init();
+            } else if (viewName === 'reports') {
+                document.getElementById('reports-view').style.display = 'block';
+                ReportsManager.init();
+            }
+        }
+    </script>
+</body>
+</html>
+
